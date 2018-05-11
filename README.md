@@ -252,7 +252,11 @@ max_wind_avg_2m
 
 ### Slope of the saturation vapor pressure curve (Delta), kPa
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1uA6Zo-K6dcbzuBiNDWyU_K61Tvd6pmH7">
+
+<br></br>
 
 ```
 DF["delta"] = 4098 * (0.6106 * np.exp((17.27 * DF["avgt.C"])/(DF["avgt.C"] + 237.3))) / ((DF["avgt.C"] + 237.3)**2)
@@ -262,7 +266,11 @@ DF["delta"] = 4098 * (0.6106 * np.exp((17.27 * DF["avgt.C"])/(DF["avgt.C"] + 237
 
 This is the pressure exerted by the weight of the earth's atmosphere. Altitude is factor when calculating this varaible. This model uses the equation in the following figure. We will make the calculation once in this model and use that as a contstant atmospheric pressure for this altitude. In the following equation <b>Z is altitude in meters</b>.
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1pIpkTvzi88OcoCTiPHRPq7_Xu5lEX6dm">
+
+<br></br>
 
 ```
 elevation = 992 # high plains of texas
@@ -274,7 +282,11 @@ P = 101.3 * (((293 - (0.0065 * elevation)) / 293) ** 5.26)
 
 This variable is the relationsip between the partial pressure of water vapor in the air and temperature. It uses our calculated atmospheric pressure (P) value to estimate the psychrometric constant. This value will be used to calculate saturated vapor pressure.
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1tBdICICKsNEwZg5GaYGTioVlA3a2aM2v">
+
+<br></br>
 
 ```
 gamma = 0.000665 * P
@@ -284,7 +296,11 @@ gamma = 0.000665 * P
 
 To simplify the overall ET<sub>o</sub> we can calculate portions of the equation seperately. The Delta Term will be used to calculate our radiation driven ET<sub>o</sub> terms in later steps.
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1vxH1NEzFgqZx81b4AJOwbz8ym0OtOFF6">
+
+<br></br>
 
 ```
 DF["delta.term"] = DF["delta"] / (DF["delta"] + (gamma * (1 + 0.34 * DF["wind.2m.m/s"])))
@@ -294,7 +310,11 @@ DF["delta.term"] = DF["delta"] / (DF["delta"] + (gamma * (1 + 0.34 * DF["wind.2m
 
 Again, we make an auxiliary calculation to simplify the overall ET<sub>o</sub> process. The Psi Term will be used to calculate our wind driven ET<sub>o</sub> terms in later steps.
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1yVSXpAr2bQOrUbF9vPwkcsRP3RI_jNav">
+
+<br></br>
 
 ```
 DF["psi.term"] = gamma / (DF["delta"] + (gamma * (1 + 0.34 * DF["wind.2m.m/s"])))
@@ -304,7 +324,11 @@ DF["psi.term"] = gamma / (DF["delta"] + (gamma * (1 + 0.34 * DF["wind.2m.m/s"]))
 
 Again, we make an auxiliary calculation to simplify the overall ET<sub>o</sub> process. The Temperature Term will be used to calculate our wind driven ET<sub>o</sub> terms in later steps. This term incorperates the average daily temperature while the previous two auxiliary terms did not. 
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1000hFVfIePFDMbEvi4BEkoM6GS8gSvVO">
+
+<br></br>
 
 ```
 DF["temp.term"] = (900 / (DF["avgt.C"] + 273)) * DF["wind.2m.m/s"]
@@ -314,11 +338,19 @@ DF["temp.term"] = (900 / (DF["avgt.C"] + 273)) * DF["wind.2m.m/s"]
 
 Saturated vapor pressure is a fucntion of temperature and therefore can be calculated with air temperature. The following equation describes the relationship between temperature and saturated vapor pressure. <b>Temperature (T) is in degrees celcius</b>.
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=12WEdLnr77AXwSWv-2_Ru7NjBRzPdv-91">
+
+<br></br>
 
 The approach will be to calculate a minimum and maximum daily saturated vapor pressure value and use those to calculate the daily mean value. We will use the following equations to calculate the minimums and maximums.
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1LkqbHD6iqmhR9rpOsd3XUnOfhNjW5fs3">
+
+<br></br>
 
 ```
 DF["max.sat.vap"] = 0.6108 * np.exp((17.27 * DF["maxt.C"]) / (DF["maxt.C"] + 237.3))
@@ -328,7 +360,11 @@ DF["mean.sat.vap"] = (DF["min.sat.vap"] + DF["max.sat.vap"]) / 2
 
 ### Actual vapor pressure (e<sub>a</sub>) derived from relative humidity, kPa
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1l4_ZN1HjjDA4Lj1Oa09MyxPOWhqcC-Ch">
+
+<br></br>
 
 ```
 DF["actual.vap"] = ((DF["min.sat.vap"] * (DF["max.RH.%"] / 100)) + (DF["max.sat.vap"] * (DF["min.RH.%"] / 100))) / 2
@@ -338,7 +374,11 @@ DF["actual.vap"] = ((DF["min.sat.vap"] * (DF["max.RH.%"] / 100)) + (DF["max.sat.
 
 We calculate these values so that we can estimate extraterrestrial radiation in the next equation. In the following equation <b><i>J</i> is the julian day or day of year</b> ranging from 1-365 on a non leap year.
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1aPFBE1HI3ZqIxzWC8CzzIPdLOa8kLUHA">
+
+<br></br>
 
 ```
 DF["earth.sun.rel.dis"] = 1 + (0.033 * np.cos(((2 * math.pi)/365) * DF["day"]))
@@ -349,7 +389,11 @@ DF["solar.decl"] = 0.409 * np.sin((((2 * math.pi)/365) * DF["day"]) - 1.39)
 
 Now we will begin a series of calculations required to calculate the incoming exraterrestrial radian. This will ultimately allow us to calculate a value for net radation from all sources in later steps. <b>Be sure to change the latitude value to the location data was collected.</b>
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1RIMx9JbdKT9IdUkbRpskh1b1bHdudQji">
+
+<br></br>
 
 ```
 lat_in_rad = (math.pi / 180) * (35.1905)
@@ -359,7 +403,11 @@ lat_in_rad = (math.pi / 180) * (35.1905)
 
 Again, this calculation will be used in our estimation of extraterrestrial radiation.
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1MqQgOs5djIuE97klAeGnjhavrdNyb8rT">
+
+<br></br>
 
 ```
 DF["sunset_angle"] = np.arccos(-math.tan(lat_in_rad) * np.tan(DF["solar.decl"]))
@@ -370,7 +418,11 @@ DF["sunset_angle"] = np.arccos(-math.tan(lat_in_rad) * np.tan(DF["solar.decl"]))
 This is the extratestrial radiation for each day. This calculation incorperates the previous compnents: <b><i>ω</i></b><sub>s</sub>, 
 <b><i>d</i></b><sub>r</sub>, <b><i>φ</i></b>, <b><i>δ</i></b>.
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1u__eQbMEQ8fhCNn8vZgE-JkRuMxHfggL">
+
+<br></br>
  
 ```
 aa = DF["sunset_angle"]*np.sin(lat_in_rad)*np.sin(DF["solar.decl"])
@@ -383,7 +435,11 @@ DF["extraT_rad"] = (((24*60)/math.pi)*0.0820*DF["earth.sun.rel.dis"])*(aa + bb)
 
 The calculation of the clear sky radiation is given by the following equation. <b><i>Z</i></b> the same elevation value we used previously.
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1xNO_UtRH95ktX-bMdXTWPvywJDZpOyk1">
+
+<br></br>
 
 ```
 DF["clr_sky_rad"] = (0.75 + (2e-5)*elevation) * DF["extraT_rad"]
@@ -391,7 +447,11 @@ DF["clr_sky_rad"] = (0.75 + (2e-5)*elevation) * DF["extraT_rad"]
 
 ### Net solar or net shortwave radiation (R<sub>ns</sub>), MJ m<sup>-2</sup> day<sup>-1</sup>
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1FqNN0XwKWUTnJ4DViKKHHVI1qLcKfjdS">
+
+<br></br>
 
 ```
 albedo = 0.23
@@ -400,9 +460,13 @@ DF["net.rad.MJ/m2*day"] = (1 - 0.23) * DF["radn.MJ/m2"]
 
 ### Net outgoing long wave solar radiation (R<sub>nl</sub>), MJ m<sup>-2</sup> day<sup>-1</sup>
 
-The rate of longwave energy emission is proportional to the absolute temperature of the surface raised to the fourth power. This is expressed in the <i>Stefan-Boltzman Law</i>. The net flux is less than Stefan-Boltzman, however. The abosrption and downward radiation from the sky reduces this enrgy flux. 
+The rate of longwave energy emission is proportional to the absolute temperature of the surface raised to the fourth power. This is expressed in the <i>Stefan-Boltzman Law</i>. The net flux is less than Stefan-Boltzman, however. The abosrption and downward radiation from the sky reduces this enrgy flux.
+
+<br></br>
 
 <img src="https://drive.google.com/uc?id=1ZJSo4jsDwTGhpRqiSt1nraBGkeg7PhmU">
+
+<br></br>
 
 ```
 sb_const = 4.903e-9
@@ -414,7 +478,11 @@ DF["outLW_rad"] = sb_const * (DF["sb_flux"] * (0.34-(0.14*np.sqrt(DF["actual.vap
 
 Net radiation (R<sub>n</sub>) is the difference between the incoming net shortwave radiation (R<sub>ns</sub>) and the outgoing net longwave radiation (R<sub>nl</sub>). We can express this a mega joules and in terms of water.
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1__YSiO1vUaCdLM6GD0zaqpeuRwQWR_Bp">
+
+<br></br>
 
 ```
 DF["total.net.rad"] = DF["net.rad.MJ/m2*day"] - DF["outLW_rad"]
@@ -422,7 +490,11 @@ DF["total.net.rad"] = DF["net.rad.MJ/m2*day"] - DF["outLW_rad"]
 
 We can now convert the net solar radaition into mm of water by multiply our net radiation by a constant that represents the heat of vaporization of water.
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1J5olunrf2YdLn5MznHQtOTdFVHBAvxSC">
+
+<br></br>
 
 ```
 DF["total.net.rad.mm"] = DF["total.net.rad"] * 0.408
@@ -434,14 +506,22 @@ DF["total.net.rad.mm"] = DF["total.net.rad"] * 0.408
 
 <b>Final radiation driven ET value, (ET<sub>rad</sub>), mm d<sup>-1</sup></b>
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=18GT2SUT_wUz-kf44eD4lCrdWFTDBQCF_">
+
+<br></br>
 
 ```
 DF["ET_rad"] = DF["delta.term"] * DF["total.net.rad.mm"]
 ```
 ### <b>Final wind driven ET value, (ET<sub>wind</sub>), mm d<sup>-1</sup></b>
 
+<br></br>
+
 <img src="https://drive.google.com/uc?id=1MYEAhfSb0X8wXEO8Ki7Gp5ZyLKkh0A9d">
+
+<br></br>
 
 ```
 DF["ET_wind"] = DF["psi.term"]*DF["temp.term"]*(DF["mean.sat.vap"] - DF["actual.vap"])
@@ -449,7 +529,11 @@ DF["ET_wind"] = DF["psi.term"]*DF["temp.term"]*(DF["mean.sat.vap"] - DF["actual.
 
 ### <b>Final Reference Evapotranspiration value, (ET<sub>o</sub>), mm d<sup>-1</sup></b>
 
-<img src="https://drive.google.com/uc?id=1iqqgHvmUCObACrWFP_3Zu6dbBKMe6hXA"> 
+<br></br>
+
+<img src="https://drive.google.com/uc?id=1iqqgHvmUCObACrWFP_3Zu6dbBKMe6hXA">
+
+<br></br>
 
 ```
 DF["ETo"] = DF["ET_rad"] + DF["ET_wind"]
@@ -476,5 +560,7 @@ for i in cols_data:
     
 plt.legend(prop={'size':12})
 ```
+
+<br></br>
 
 <img src="https://drive.google.com/uc?id=18pp2cTSLpy85Dv1Tbo92PIC2unK8dGKQ">
