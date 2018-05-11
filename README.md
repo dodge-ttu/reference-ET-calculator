@@ -368,7 +368,7 @@ DF["sunset_angle"] = np.arccos(-math.tan(lat_in_rad) * np.tan(DF["solar.decl"]))
 ### Extraterrestrial radiation (<b><i>R<sub>a</sub></i></b>), MJ m<sup>-2</sup> day<sup>-1</sup>
 
 This is the extratestrial radiation for each day. This calculation incorperates the previous compnents: <b><i>ω</i><b/><sub>s</sub>, 
-<b><i>d</i><b/><sub>r</sub>, <b><i>φ</i><b/>, <b><i>δ</i><b/>.
+<b><i>d</i></b><sub>r</sub>, <b><i>φ</i><b/>, <b><i>δ</i></b>.
         
  <img src="https://drive.google.com/uc?id=1u__eQbMEQ8fhCNn8vZgE-JkRuMxHfggL">
  
