@@ -1,13 +1,8 @@
 from datetime import datetime
 from matplotlib import pyplot as plt
-from IPython.display import Markdown, display
-import numpy.polynomial.polynomial as poly
-import ipywidgets as widgets
-from IPython.display import display, HTML
 import pandas as pd
 import math
 import numpy as np
-import qgrid
 from scipy import stats
 
 DF = pd.read_csv("https://drive.google.com/uc?id=1K7vnCpK8tElmE-VfyMiN4pQSQEAkOrTE") # bushland data set W. Guo Spring 2018
