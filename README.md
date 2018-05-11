@@ -2,7 +2,9 @@
 ### A guide for calculating reference evapotranspiration in Python with a sample data set
 <img src="https://drive.google.com/uc?id=1TLUYQ7uSpISZI2V3CVF15XrhhiJPENj1">
 
-#### Will Dodge Spring 2018 
+#### Will Dodge Spring 2018
+
+<br></br>
 
 ---
 
@@ -14,6 +16,8 @@ Evapotranspiration (ET) is a term used in agriculture to describe total evaporat
 
 In February of 2010 the researchers at the University of Florida Institute of Food and Agricultural Sciences published a 
 <a href="https://drive.google.com/file/d/1EVjUARYY0g5o0ioVy70yANynh8DAQ4ir/view?usp=sharing">beautiful paper</a> detailing a step by step method for calculating ETo based on the FAO-56 model. The crux of the model is the requirement for clean climate data for the four key parameters. Weather data is widely available but not always complete or in units appropriate for FAO-56. Python is a powerful programming language with superior data wrangling capacity. Here we leverage the power of Python to clean and organize daily climate data, calculate ETo, and build widgets suitable for use in a <a href="jupyter.org">Jupyter Notebook</a>.
+
+<br></br>
 
 ---
 
@@ -36,11 +40,6 @@ import pandas as pd
 import math
 import numpy as np
 from scipy import stats
-from IPython.display import Markdown, display
-import numpy.polynomial.polynomial as poly
-import ipywidgets as widgets
-from IPython.display import display, HTML
-import qgrid
 ````
 ### Read weather data into Pandas data frame
 
@@ -49,6 +48,8 @@ In this script the raw <code>.csv</code> data is coming from a google drive shar
 ```
 DF = pd.read_csv("https://drive.google.com/uc?id=1K7vnCpK8tElmE-VfyMiN4pQSQEAkOrTE")
 ```
+
+<br></br>
 
 ---
 
@@ -207,6 +208,8 @@ DF = pd.DataFrame(new_names)
 ```
 
 Our data is now clean, organized, and ready for ETo calculation!
+
+<br></br>
 
 --- 
 
@@ -549,6 +552,8 @@ DF["ET_wind"] = DF["psi.term"]*DF["temp.term"]*(DF["mean.sat.vap"] - DF["actual.
 ```
 DF["ETo"] = DF["ET_rad"] + DF["ET_wind"]
 ```
+
+<br></br>
 
 ---
 
