@@ -2,7 +2,7 @@
 
 <img src="https://drive.google.com/uc?id=1TLUYQ7uSpISZI2V3CVF15XrhhiJPENj1">
 
-### Will Dodge Spring 2018
+### Will Dodge Spring 2018 ###
 
 ---
 
@@ -15,6 +15,25 @@ In February of 2010 the researchers at the University of Florida Institute of Fo
 
 ---
 
+### Import required libraries:
+
+```
+from datetime import datetime
+from matplotlib import pyplot as plt
+import pandas as pd
+import math
+import numpy as np
+from scipy import stats
+from IPython.display import Markdown, display
+import numpy.polynomial.polynomial as poly
+import ipywidgets as widgets
+from IPython.display import display, HTML
+import qgrid
+````
+         
+         
+         
+             
 
 
 
