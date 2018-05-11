@@ -4,7 +4,11 @@
 
 #### Will Dodge Spring 2018 
 
+<br></br>
+
 ---
+
+<br></br>
 
 ### Overview
 
@@ -13,7 +17,11 @@ Evapotranspiration (ET) is a term used in agriculture to describe total evaporat
 In February of 2010 the researchers at the University of Florida Institute of Food and Agricultural Sciences published a 
 <a href="https://drive.google.com/file/d/1EVjUARYY0g5o0ioVy70yANynh8DAQ4ir/view?usp=sharing">beautiful paper</a> detailing a step by step method for calculating ETo based on the FAO-56 model. The crux of the model is the requirement for clean climate data for the four key parameters. Weather data is widely available but not always complete or in units appropriate for FAO-56. Python is a powerful programming language with superior data wrangling capacity. Here we leverage the power of Python to clean and organize daily climate data, calculate ETo, and build widgets suitable for use in a <a href="jupyter.org">Jupyter Notebook</a>.
 
+<br></br>
+
 ---
+
+<br></br>
 
 ### Observation data required
 
@@ -45,7 +53,12 @@ In this script the raw <code>.csv</code> data is coming from a google drive shar
 ```
 DF = pd.read_csv("https://drive.google.com/uc?id=1K7vnCpK8tElmE-VfyMiN4pQSQEAkOrTE")
 ```
+
+<br></br>
+
 ---
+
+<br></br>
 
 ## The test data needs to be cleaned
 
@@ -201,7 +214,11 @@ DF = pd.DataFrame(new_names)
 
 Our data is now clean, organized, and ready for ETo calculation!
 
+<br></br>
+
 --- 
+
+<br></br>
 
 ## Step by Step ETo Calculation
 
@@ -500,7 +517,11 @@ We can now convert the net solar radaition into mm of water by multiply our net 
 DF["total.net.rad.mm"] = DF["total.net.rad"] * 0.408
 ```
 
+<br></br>
+
 ---
+
+<br></br>
 
 ## Overall ET<sub>o</sub> equation
 
@@ -539,7 +560,11 @@ DF["ET_wind"] = DF["psi.term"]*DF["temp.term"]*(DF["mean.sat.vap"] - DF["actual.
 DF["ETo"] = DF["ET_rad"] + DF["ET_wind"]
 ```
 
+<br></br>
+
 ---
+
+<br></br>
 
 ## Plot ETo data
 
