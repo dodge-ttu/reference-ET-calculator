@@ -15,6 +15,14 @@ In February of 2010 the researchers at the University of Florida Institute of Fo
 
 ---
 
+### Observation data required:
+
+The required parameters for calculating ET<sub>o</sub> are solar radiation, wind speed, air temperature, and relative humididity. The specifics of these observations is well documented in the publication this model is based upon. In the event that one is missing data or entire parameters the official documentation at the <a href="http://www.fao.org/docrep/X0490E/x0490e00.htm#Contents">FAO website</a> sould be consulted to determine the approach to calculating ETO without said missing variable. In this guide a link is provided so that users can read a test csv from URL meaning tha one does not need a weather data set of their own to work through this tutorial.
+
+#### The chart below describes the weather data required:
+
+<img src="https://drive.google.com/uc?id=1scDh_GzljhJ6AyVDlQz-k_ZadNvyW6Sc">
+
 ### Import required libraries:
 
 ```
@@ -30,6 +38,10 @@ import ipywidgets as widgets
 from IPython.display import display, HTML
 import qgrid
 ````
+### Observation data required:
+
+The required parameters for calculating ET<sub>o</sub> are solar radiation, wind speed, air temperature, and relative humididity. The specifics of these observations is well documented in the publication this model is based upon. In the event that one is missing data or entire parameters the official documentation at the <a href="http://www.fao.org/docrep/X0490E/x0490e00.htm#Contents">FAO website</a> sould be consulted to determine the approach to calculating ETO without said missing variable.
+
          
          
          
