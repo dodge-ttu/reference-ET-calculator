@@ -44,16 +44,7 @@ In this script the raw <code>.csv</code> data is coming from a google drive shar
 
 ```
 DF = pd.read_csv("https://drive.google.com/uc?id=1K7vnCpK8tElmE-VfyMiN4pQSQEAkOrTE")
-DF[:5]
-
-Year	DOY	Time	AirTemp	RelHumid	SolRad	WS_2m	BP	Rainfall_Tot
-0	2016	1	15	-3.137272	99.82642	0.005017	2.011444	90.29302	0.0
-1	2016	1	30	-3.171428	99.81180	0.000912	2.108333	90.29030	0.0
-2	2016	1	45	-3.204267	99.63895	0.003192	1.661222	90.28892	0.0
-3	2016	1	100	-3.230289	99.58411	0.002736	1.848778	90.29369	0.0
-4	2016	1	115	-3.245439	99.44096	0.006841	1.843444	90.29673	0.0
 ```
-
 ---
 
 ### The test data needs to be cleaned
@@ -86,7 +77,6 @@ def put_colon_in_time(pandas_series):
     return fixed_time
 
 # Run function and fix time column
-
 DF["TimeWcolon"] = put_colon_in_time(DF["Time"])
 ```
 
@@ -112,18 +102,7 @@ def change_24(time_with_colon):
     return TimeNo24
     
 # Run function and remove 24:00
-    
 DF["TimeNo24"] = change_24(DF["TimeWColon"])
-
-# Inspect output
-
-DF["TimeNo24"].iloc[94:98]
-
-94    23:45
-95    23:59
-96    00:15
-97    00:30
-Name: TimeNo24, dtype: object
 ```
 
 #### Concantonate date and time strings for parsing
@@ -132,11 +111,9 @@ Up to this point our date and time have been in the form of strings. We want to 
 
 ```
 # Combine the 'year', 'DOY, and 'TimeNo24' into parsable string
-
 DF["date"] = DF["Year"].map(str)+"-"+DF['DOY'].map(str)+" "+ DF["TimeNo24"].map(str) 
 
 # Parse date and time
-
 DF["date"] = pd.to_datetime(DF["date"], format = "%Y-%j %H:%M")
 ```
 
@@ -146,11 +123,9 @@ If we set the index of the data frame to the datetime series, then creating subs
 
 ```
 # Set "date" column to index
-
 DF = DF.set_index(DF["date"])
 
 # Drop intermediate time columns no longer needed
-
 DF = DF.drop(columns=["date","TimeWcolon","TimeNo24"])
 ```
 
@@ -175,11 +150,9 @@ Now that we have eliminated numerical values that are either impossible or extre
 
 ```
 # If test returns True  missing values exist in given series
-
 DF["AirTemp"].isnull().values.any()
 
 # Interpolate missing values
-
 DF["AirTemp"] = DF["AirTemp"].interpolate()
 DF["RelHumid"] = DF["RelHumid"].interpolate()
 DF["SolRad"] = DF["SolRad"].interpolate()
@@ -187,7 +160,6 @@ DF["WS_2m"] = DF["WS_2m"].interpolate()
 DF["BP"] = DF["BP"].interpolate()
 
 # Don't interpolate rainfall, just replace missing values with 0
-
 DF["Rainfall_Tot"] = DF["Rainfall_Tot"].fillna(0)
 
 ```
@@ -198,26 +170,21 @@ For several of our parameters we need a daily high and low. We are going to use 
 
 ```
 # Create a daily data set from our clean 15 minute data
-
 DF_daily = DF.resample('24H').mean()
 
 # Extract required dialy min and max value with groupby()
-
 DF_daily["mint.C"] = DF.groupby('DOY').min()["AirTemp"].values
 DF_daily["maxt.C"] = DF.groupby('DOY').max()["AirTemp"].values
 DF_daily["min.RH.%"] = DF.groupby('DOY').min()["RelHumid"].values
 DF_daily["max.RH.%"] = DF.groupby('DOY').max()["RelHumid"].values
 
 # Use sum() for rain rather that mean() when aggregation to larger time step
-
 DF_daily["Rain_Tot"] = DF.loc[:,("Rainfall_Tot")].resample('24H').sum()
 ```
 
 #### Here I rename and reorder columns to comply with my code
 
 ```
-# Create dicitonay
-
 new_names = {"year":DF_daily["Year"],
                "day":DF_daily["DOY"],
                "radn.W/m2":DF_daily["SolRad"],
@@ -228,8 +195,6 @@ new_names = {"year":DF_daily["Year"],
                "min.RH.%":DF_daily["min.RH.%"],
                "max.RH.%":DF_daily["max.RH.%"],
                "rain.mm":DF_daily["Rain_Tot"]} 
-               
-# Create data frame
 
 DF = pd.DataFrame(new_names)
 ```
@@ -254,7 +219,6 @@ This variable is calculated in our raw weather data but in different units than 
 
 ```
 # Display a few lines of solar radiation values
-
 DF["radn.W/m2"][:5] # W m^-2
 ```
 
@@ -264,7 +228,6 @@ Here we make a conversion from W/m<sup>2</sup> to MJ m<sup>-2</sup> day<sup>-1</
 
 ```
 # Convert solar radiation
-
 DF["radn.MJ/m2"] = DF["radn.W/m2"] * 0.0864
 ```
 
@@ -274,7 +237,6 @@ Measured two meters above a realatively flat surface. This in an observed value 
 
 ```
 # Display a few lines of solar values
-
 DF["wind.2m.m/s"][:5]
 ```
 
@@ -284,20 +246,108 @@ Our value is in meters per second but we can convert this to miles per hour. Div
 
 ```
 # check max wind speed value
+max_wind_avg_2m = (max(DF["wind.2m.m/s"]) / 1609.34) * 3600
+max_wind_avg_2m 
+```
 
-In []: max_wind_avg_2m = (max(DF["wind.2m.m/s"]) / 1609.34) * 3600
+#### Slope of the saturation vapor pressure curve (Delta), kPa
 
-In []: max_wind_avg_2m # miles per hour
-Out[]: 20.855048568046527
+<img src="https://drive.google.com/uc?id=1uA6Zo-K6dcbzuBiNDWyU_K61Tvd6pmH7">
+
 ```
+DF["delta"] = 4098 * (0.6106 * np.exp((17.27 * DF["avgt.C"])/(DF["avgt.C"] + 237.3))) / ((DF["avgt.C"] + 237.3)**2)
 ```
-Year	DOY	Time	AirTemp	RelHumid	SolRad	WS_2m	BP	Rainfall_Tot
-0	2016	1	15	-3.137272	99.82642	0.005017	2.011444	90.29302	0.0
-1	2016	1	30	-3.171428	99.81180	0.000912	2.108333	90.29030	0.0
-2	2016	1	45	-3.204267	99.63895	0.003192	1.661222	90.28892	0.0
-3	2016	1	100	-3.230289	99.58411	0.002736	1.848778	90.29369	0.0
-4	2016	1	115	-3.245439	99.44096	0.006841	1.843444	90.29673	0.0
+
+#### Atmospheric Pressure (P), kPa 
+
+This is the pressure exerted by the weight of the earth's atmosphere. Altitude is factor when calculating this varaible. This model uses the equation in the following figure. We will make the calculation once in this model and use that as a contstant atmospheric pressure for this altitude. In the following equation <b>Z is altitude in meters</b>.
+
+<img src="https://drive.google.com/uc?id=1pIpkTvzi88OcoCTiPHRPq7_Xu5lEX6dm">
+
 ```
+elevation = 992 # high plains of texas
+
+P = 101.3 * (((293 - (0.0065 * elevation)) / 293) ** 5.26)
+```
+
+#### Psychrometric constant (gamma), kPa ℃<sup>-1</sup>
+
+This variable is the relationsip between the partial pressure of water vapor in the air and temperature. It uses our calculated atmospheric pressure (P) value to estimate the psychrometric constant. This value will be used to calculate saturated vapor pressure.
+
+<img src="https://drive.google.com/uc?id=1tBdICICKsNEwZg5GaYGTioVlA3a2aM2v">
+
+```
+gamma = 0.000665 * P
+```
+
+#### Delta Term (DT), auxiliary calculation for the radiation term
+
+To simplify the overall ET<sub>o</sub> we can calculate portions of the equation seperately. The Delta Term will be used to calculate our radiation driven ET<sub>o</sub> terms in later steps.
+
+<img src="https://drive.google.com/uc?id=1vxH1NEzFgqZx81b4AJOwbz8ym0OtOFF6">
+
+```
+DF["delta.term"] = DF["delta"] / (DF["delta"] + (gamma * (1 + 0.34 * DF["wind.2m.m/s"])))
+```
+
+#### Psi Term (PT), auxiliary calculation for the wind term
+
+Again, we make an auxiliary calculation to simplify the overall ET<sub>o</sub> process. The Psi Term will be used to calculate our wind driven ET<sub>o</sub> terms in later steps.
+
+<img src="https://drive.google.com/uc?id=1yVSXpAr2bQOrUbF9vPwkcsRP3RI_jNav">
+
+```
+DF["psi.term"] = gamma / (DF["delta"] + (gamma * (1 + 0.34 * DF["wind.2m.m/s"])))
+```
+
+#### Temperature Term (TT), auxiliary calculation for the wind term
+
+Again, we make an auxiliary calculation to simplify the overall ET<sub>o</sub> process. The Temperature Term will be used to calculate our wind driven ET<sub>o</sub> terms in later steps. This term incorperates the average daily temperature while the previous two auxiliary terms did not. 
+
+<img src="https://drive.google.com/uc?id=1000hFVfIePFDMbEvi4BEkoM6GS8gSvVO">
+
+```
+DF["temp.term"] = (900 / (DF["avgt.C"] + 273)) * DF["wind.2m.m/s"]
+```
+
+#### Calculate mean saturation vapor pressure (e<sub>s</sub>), kPa
+
+Saturated vapor pressure is a fucntion of temperature and therefore can be calculated with air temperature. The following equation describes the relationship between temperature and saturated vapor pressure. <b>Temperature (T) is in degrees celcius</b>.
+
+<img src="https://drive.google.com/uc?id=12WEdLnr77AXwSWv-2_Ru7NjBRzPdv-91">
+
+The approach will be to calculate a minimum and maximum daily saturated vapor pressure value and use those to calculate the daily mean value. We will use the following equations to calculate the minimums and maximums.
+
+<img src="https://drive.google.com/uc?id=1LkqbHD6iqmhR9rpOsd3XUnOfhNjW5fs3">
+
+```
+DF["max.sat.vap"] = 0.6108 * np.exp((17.27 * DF["maxt.C"]) / (DF["maxt.C"] + 237.3))
+DF["min.sat.vap"] = 0.6108 * np.exp((17.27 * DF["mint.C"]) / (DF["mint.C"] + 237.3))
+DF["mean.sat.vap"] = (DF["min.sat.vap"] + DF["max.sat.vap"]) / 2
+```
+
+#### Actual vapor pressure (e<sub>a</sub>) derived from relative humidity, kPa
+
+<img src="https://drive.google.com/uc?id=1l4_ZN1HjjDA4Lj1Oa09MyxPOWhqcC-Ch">
+
+```
+DF["actual.vap"] = ((DF["min.sat.vap"] * (DF["max.RH.%"] / 100)) + (DF["max.sat.vap"] * (DF["min.RH.%"] / 100))) / 2
+```
+
+#### Inverse relative Earth-Sun distance (<i><b>d</b></i><sub>r</sub>) and solar declination (δ) 
+
+We calculate these values so that we can estimate extraterrestrial radiation in the next equation. In the following equation <b><i>J</i> is the julian day or day of year</b> ranging from 1-365 on a non leap year.
+
+<img src="https://drive.google.com/uc?id=1aPFBE1HI3ZqIxzWC8CzzIPdLOa8kLUHA">
+
+```
+DF["earth.sun.rel.dis"] = 1 + (0.033 * np.cos(((2 * math.pi)/365) * DF["day"]))
+DF["solar.decl"] = 0.409 * np.sin((((2 * math.pi)/365) * DF["day"]) - 1.39)
+```
+
+
+
+
 
 
 
