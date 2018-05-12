@@ -64,7 +64,6 @@ DF = DF.set_index(DF["date"])
 DF = DF.drop(columns=["date","TimeWcolon","TimeNo24"])
 
 # Remove error values
-
 DF["AirTemp"] = DF["AirTemp"][(DF["AirTemp"] < 45) & (DF["AirTemp"] > -30)]
 DF["RelHumid"] = DF["RelHumid"][(DF["RelHumid"] < 100) & (DF["RelHumid"] > 0)]
 DF["SolRad"] = DF["SolRad"][(DF["SolRad"] < 2000) & (DF["SolRad"] > 0)]
