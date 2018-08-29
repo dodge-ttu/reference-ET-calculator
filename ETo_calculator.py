@@ -8,7 +8,7 @@ from scipy import stats
 DF = pd.read_csv("https://drive.google.com/uc?id=1K7vnCpK8tElmE-VfyMiN4pQSQEAkOrTE") # bushland data set W. Guo Spring 2018
 
 def put_colon_in_time(pandas_series):
-    """ Convert the data in the raw weather data set to a string and insert a colon in correct place.
+    """ Convert data in the raw weather data set to a string and insert a colon in correct place.
     
     :param pandas_series: pandas series of time without a colon, ex. "115" rather than "01:15"
     """
