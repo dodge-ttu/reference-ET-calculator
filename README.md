@@ -1,4 +1,4 @@
-## Reference ET calucualations via FAO-56
+## Reference ET via FAO-56 model
 
 #### Have fun calculating ETo and many other agriculturaly relevant varaibles! Code, guide, and a 17 year weather data set are included. The data for this code and notebook is hosted on a google drive and read directly with pandas.
 
