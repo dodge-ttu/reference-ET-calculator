@@ -190,7 +190,7 @@ DF_daily["max.RH.%"] = DF.groupby('DOY').max()["RelHumid"].values
 DF_daily["Rain_Tot"] = DF.loc[:,("Rainfall_Tot")].resample('24H').sum()
 ```
 
-### Here I rename and reorder columns to comply with my code
+### Rename and reorder columns
 
 ```
 new_names = {"year":DF_daily["Year"],
