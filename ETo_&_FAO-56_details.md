@@ -1,6 +1,6 @@
 # ETo via FAO-56 and Python
 ### A guide for calculating reference evapotranspiration in Python with a sample data set
-<img src="https://drive.google.com/uc?id=1TLUYQ7uSpISZI2V3CVF15XrhhiJPENj1">
+<img src="https://drive.google.com/uc?id=1GtlL7gm9BnQihLuqHkbYcx_Hr1KYd2cO">
 
 #### Will Dodge Spring 2018
 
