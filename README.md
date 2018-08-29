@@ -46,7 +46,7 @@ from scipy import stats
 In this script the raw <code>.csv</code> data is coming from a google drive shareable link. This is <b>great</b> because the notebook itself can be distributed without needing to also distrubute a slew of assocaited file data. The other thing is that <b>users who execute this code will not have to adjust the filepath given</b> to the <code>pd.read_csv()</code> command.
 
 ```
-DF = pd.read_csv("https://drive.google.com/uc?id=1K7vnCpK8tElmE-VfyMiN4pQSQEAkOrTE")
+DF = pd.read_csv(https://drive.google.com/uc?id=1GtlL7gm9BnQihLuqHkbYcx_Hr1KYd2cO")
 ```
 
 <br></br>
