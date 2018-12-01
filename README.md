@@ -2,7 +2,7 @@
 ____
 
 #### Calculate ETo and many other agriculturally relevant variables! Code, guide, and a 17 year weather data set are included.
-#### A jupyter notebook is also included with a plotting widget to look at all of the calculated and measured variables over time.
+#### A jupyter notebook is also included with a plotting widget.
 
 ____
 
